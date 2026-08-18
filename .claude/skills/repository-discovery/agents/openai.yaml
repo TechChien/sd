@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Discovery"
+  short_description: "Generate repository discovery docs for AI agents."
+  default_prompt: "Use $repository-discovery to document this repository for future AI agents."
