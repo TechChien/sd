@@ -6,14 +6,17 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 1 Day 2 完成（DNS + Load Balancer + Application Layer，套用於 URL Shortener），準備進入 Day 3（Database 設計）
+- **目前所在**：Week 1 Day 3 完成（Database 設計：SQL vs NoSQL、Sharding、Replication，套用於 URL Shortener），準備進入 Day 4（Caching 策略）
 - **已完成的 Mock Interview**：無
 - **累積弱點清單**：
   - 容易停在「概念知道」層次，較少主動講到具體技術機制（如 L4/L7 路由如何影響設計決策）
   - Trade-off 分析時，容易漏抓系統的不對稱性（例如流量比例懸殊時，哪一半才是真正需要優化的對象）
   - 待加強：主動展現「不過度設計」的判斷力（例如先用 deployment pool 而非直接上完整 microservices）
-- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`
-- **最後更新**：2026-08-19
+  - **Back-of-envelope 估算容易失準**（Day 3 Q2：keyspace 大小估算錯了兩個數量級以上），需要刻意練習容量估算
+  - 容易混淆「機率極低」與「保證」的差異（誤以為 random+hash 方法可以完全不查 DB 就保證唯一）
+  - 部分名詞定義有誤記（如 Federation 的作用方向），需要每次先核對 primer 原文再下結論
+- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`
+- **最後更新**：2026-08-20
 
 ## 背景
 
