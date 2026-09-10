@@ -6,7 +6,7 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 2 Day 2 完成（**AI Mock Interview #2 — Rate Limiter**；記錄與 debrief 見 `issues/02-rate-limiter.md`）。準備進入 Week 2 Day 3：**Debrief + Consistent Hashing 概念**
+- **目前所在**：Week 2 Day 3 完成（**Mock #2 debrief 行動化 + Consistent Hashing 概念**；記錄見 `daily_road_map/2026-09-10-day9.md`）。準備進入 Week 2 Day 4：**Cache eviction policy、Replication for cache → Distributed Cache 設計**
 - **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）
 - **累積弱點清單**：
   - 容易停在「概念知道」層次，較少主動講到具體技術機制（如 L4/L7 路由如何影響設計決策）
@@ -24,9 +24,9 @@ Status: active
   - **【Mock #2】compound 問題的 paraphrase drill 仍未內化**：Mock #1 的頭號 carry-over,Mock #2 依然沒有未經提示就覆述,且把 fail-open/fail-closed 答反（payments 答成 fail-open + general 答成 fail-closed）還堅持不改
   - **【Mock #2】容量估算沒有帶進 mock**：面試官給了 1M keys / 200k active / 500k req/s,一個數字都沒用（沒算 Redis 記憶體、沒驗證單區 Redis 吞吐、capacity 20 無推導）。Day 7 Part 1 練的東西沒有 transfer
   - **【Mock #2】不確定怎麼答時,會硬套一個記得的術語（CAS、local cache）到它其實無法解決的問題上**,而不是說「我不確定,讓我想一下」
-- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`
-- **Mock Interview 記錄**：`issues/01-url-shortener.md`
-- **最後更新**：2026-09-09
+- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`
+- **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`
+- **最後更新**：2026-09-10
 
 ## 背景
 
