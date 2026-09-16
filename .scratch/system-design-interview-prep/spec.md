@@ -6,8 +6,9 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 2 Day 4 完成（**Cache eviction policy（Redis LRU/LFU/LRM 近似演算法與選型）+ Cache Replication（async replication、master 驅動 eviction/expire、replica 唯讀）→ 收斂成 Distributed Cache 整體設計骨架**；記錄見 `daily_road_map/2026-09-14-day10.md`）。準備進入 Week 2 Day 5：**AI Mock Interview #3（Distributed Cache）**
-- **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）
+- **目前所在**：Week 2 Day 6 完成（**Mock #3 debrief 行動化：「硬套術語」轉固定句型、Virtual node vs Physical node 心智模型切開、Cost/mitigation 邏輯自檢**；記錄見 `daily_road_map/2026-09-16-day11.md`）。準備進入 Week 2 Day 7：**複習/補進度**
+- **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）、#3 Distributed Cache（`issues/03-distributed-cache.md`）
+- **本次新進展（Mock #3）**：back-of-envelope estimation 首次在 mock 中主動使用並自我糾錯；compound question paraphrase 首次不經提示主動做到；容量規劃時主動想到 failure headroom 並正確推導完整的 cascade failure chain
 - **累積弱點清單**：
   - 容易停在「概念知道」層次，較少主動講到具體技術機制（如 L4/L7 路由如何影響設計決策）
   - Trade-off 分析時，容易漏抓系統的不對稱性（例如流量比例懸殊時，哪一半才是真正需要優化的對象）
@@ -24,9 +25,16 @@ Status: active
   - **【Mock #2】compound 問題的 paraphrase drill 仍未內化**：Mock #1 的頭號 carry-over,Mock #2 依然沒有未經提示就覆述,且把 fail-open/fail-closed 答反（payments 答成 fail-open + general 答成 fail-closed）還堅持不改
   - **【Mock #2】容量估算沒有帶進 mock**：面試官給了 1M keys / 200k active / 500k req/s,一個數字都沒用（沒算 Redis 記憶體、沒驗證單區 Redis 吞吐、capacity 20 無推導）。Day 7 Part 1 練的東西沒有 transfer
   - **【Mock #2】不確定怎麼答時,會硬套一個記得的術語（CAS、local cache）到它其實無法解決的問題上**,而不是說「我不確定,讓我想一下」
-- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`
-- **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`
-- **最後更新**：2026-09-14
+  - **【Mock #3 新增，最高優先，已連續 2 場出現，需列為固定弱點】不確定/答錯時硬套記得的術語到不相關問題上，模式確認為 recurring**：Mock #2 是 CAS 套用到跨區域 overshoot；Mock #3 是把 `WAIT`（解決 failover 時寫入遺失）套到「promoted node 獨立做 eviction 的代價」上，兩者完全無關。需要跟 compound-question paraphrase 一樣，設計「觸發條件 → 固定句型」讓它變成反射（例如："I'm about to name a term — let me first check if it actually addresses this specific mechanism."）
+  - **【Mock #3】virtual node 數量跟 physical node 數量會混淆**：曾直接跳到「100 nodes，cost 是 virtual node 記憶體，mitigate 用增加 virtual node」，但 virtual node 是環上負載均勻度的機制，跟「要幾台實體機器」（容量+容錯的算式）完全是兩個維度，不會互相取代。
+  - **【Mock #3】cost/mitigation 配對有時邏輯不一致**：即使選型本身是對的（6 nodes），仍講出「cost 是 metadata overhead，mitigate 用 virtual node」這種兩者對不上的配對——不是「只講優點不講代價」，而是「代價跟緩解方式各講了一個但兜不起來」，是 Mock #2 checklist #6 的新變體，需要在說出 cost/mitigation 前檢查兩者是否真的邏輯相關。
+- **已確認開始生效的正向習慣（保留，避免退步）**：
+  - **Back-of-envelope estimation 已能在 mock 中主動使用，即使第一次算錯也會自我發現並糾正**（Mock #3：p99 latency 跟 throughput ceiling 搞混，被追問後自己分清楚兩者關係）——Day 7/9 練的容量估算，第三場 mock 終於 transfer 進來。
+  - **Compound question 的 paraphrase-first 習慣第一次不經提示主動做到**（Mock #1、#2 的頭號 carry-over，Mock #3 終於出現，儘管內容還不夠精確，需持續驗收到穩定）。
+  - **會主動把「容量夠不夠」延伸到「容錯夠不夠」，並正確推導完整的 cascade failure chain**（Mock #3：3 nodes 容量夠但零容錯 → 一台掛掉鄰居直接過載 → eviction → hot-key miss → backend flood → 可能繼續連環倒），這是前兩場沒出現過的主動風險意識，值得在下次 mock 持續驗收是否穩定出現。
+- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`
+- **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`、`issues/03-distributed-cache.md`
+- **最後更新**：2026-09-16
 
 ## 背景
 
