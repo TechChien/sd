@@ -6,7 +6,7 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 2 Day 6 完成（**Mock #3 debrief 行動化：「硬套術語」轉固定句型、Virtual node vs Physical node 心智模型切開、Cost/mitigation 邏輯自檢**；記錄見 `daily_road_map/2026-09-16-day11.md`）。準備進入 Week 2 Day 7：**複習/補進度**
+- **目前所在**：Week 2 Day 7 完成（**Day 11 固定句型驗收 + Week 2 Building Blocks 收尾（Rate Limiter 演算法/distributed、Consistent Hashing、Cache eviction、Replication）+ 容量估算刻意練習**；記錄見 `daily_road_map/2026-09-17-day12.md`）。**Week 2 全部完成**，準備進入 Week 3 Day 1：Chat/Messaging System（WebSocket vs Long polling、Message Queue 基礎）
 - **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）、#3 Distributed Cache（`issues/03-distributed-cache.md`）
 - **本次新進展（Mock #3）**：back-of-envelope estimation 首次在 mock 中主動使用並自我糾錯；compound question paraphrase 首次不經提示主動做到；容量規劃時主動想到 failure headroom 並正確推導完整的 cascade failure chain
 - **累積弱點清單**：
@@ -28,13 +28,17 @@ Status: active
   - **【Mock #3 新增，最高優先，已連續 2 場出現，需列為固定弱點】不確定/答錯時硬套記得的術語到不相關問題上，模式確認為 recurring**：Mock #2 是 CAS 套用到跨區域 overshoot；Mock #3 是把 `WAIT`（解決 failover 時寫入遺失）套到「promoted node 獨立做 eviction 的代價」上，兩者完全無關。需要跟 compound-question paraphrase 一樣，設計「觸發條件 → 固定句型」讓它變成反射（例如："I'm about to name a term — let me first check if it actually addresses this specific mechanism."）
   - **【Mock #3】virtual node 數量跟 physical node 數量會混淆**：曾直接跳到「100 nodes，cost 是 virtual node 記憶體，mitigate 用增加 virtual node」，但 virtual node 是環上負載均勻度的機制，跟「要幾台實體機器」（容量+容錯的算式）完全是兩個維度，不會互相取代。
   - **【Mock #3】cost/mitigation 配對有時邏輯不一致**：即使選型本身是對的（6 nodes），仍講出「cost 是 metadata overhead，mitigate 用 virtual node」這種兩者對不上的配對——不是「只講優點不講代價」，而是「代價跟緩解方式各講了一個但兜不起來」，是 Mock #2 checklist #6 的新變體，需要在說出 cost/mitigation 前檢查兩者是否真的邏輯相關。
+  - **【Day 12 新增】內容正確 ≠ 檢查動作已內化**：文字/非壓力情境下重講 Mock #3 片段時，即使最後答案正確，仍會跳過 Day 11 剛練的「先講檢查句再回答」這個中間步驟，要提醒才會補上。下次 mock 需驗收這個檢查動作能否在沒有事先提醒的情況下自動出現。
+  - **【Day 12 新增】容量估算時重複代入同一個數字造成單位/量級混亂**：500k keys 的資訊被重複用在兩個相乘項裡，導致記憶體估算差了近 20 倍（40GB vs 實際 ~2GB），並直接帶出「需要 2 shard」的錯誤架構結論——與 Week 1 Day 3 keyspace 估算錯誤同一形狀，估算是持續性弱點，尚未穩定。算完建議用「量級直覺」回頭檢查一次。
+  - **【Day 12 新增】Physical node 數量該由「容量算式」還是「容錯算式」決定，兩者會在同一句話裡打架**：算完「容量只需 1 台」又緊接著說「1 master + 1 replica」，未意識到這兩句話矛盾。正確心智模型是「取兩者較大值」，是 Day 11 virtual/physical node 心智模型的另一個變體（這次不是 virtual vs physical 搞混，是「physical node 該由哪個算式決定」搞混）。
 - **已確認開始生效的正向習慣（保留，避免退步）**：
   - **Back-of-envelope estimation 已能在 mock 中主動使用，即使第一次算錯也會自我發現並糾正**（Mock #3：p99 latency 跟 throughput ceiling 搞混，被追問後自己分清楚兩者關係）——Day 7/9 練的容量估算，第三場 mock 終於 transfer 進來。
   - **Compound question 的 paraphrase-first 習慣第一次不經提示主動做到**（Mock #1、#2 的頭號 carry-over，Mock #3 終於出現，儘管內容還不夠精確，需持續驗收到穩定）。
   - **會主動把「容量夠不夠」延伸到「容錯夠不夠」，並正確推導完整的 cascade failure chain**（Mock #3：3 nodes 容量夠但零容錯 → 一台掛掉鄰居直接過載 → eviction → hot-key miss → backend flood → 可能繼續連環倒），這是前兩場沒出現過的主動風險意識，值得在下次 mock 持續驗收是否穩定出現。
-- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`
+  - **【Day 12 新增】容量估算後會主動延伸到 replication factor 的可用性風險**（Day 12 Part 3：算完 RF=2 的容量後，主動指出「master 掛掉、唯一 replica 被 promote 後系統暫時缺乏 replica」，建議提高到 RF=3），跟上一條 cascade failure chain 是同一種「容量→容錯」主動延伸的正向習慣，這次是在非 mock 情境下也穩定出現，值得下次 mock 驗收。
+- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`、`daily_road_map/2026-09-17-day12.md`
 - **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`、`issues/03-distributed-cache.md`
-- **最後更新**：2026-09-16
+- **最後更新**：2026-09-17
 
 ## 背景
 
