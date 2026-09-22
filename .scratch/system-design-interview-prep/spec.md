@@ -6,7 +6,7 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 3 Day 1 完成（**Chat/Messaging System 導入：WebSocket vs Long Polling vs SSE 機制比較、Message Queue 基礎（含 back pressure）**；記錄見 `daily_road_map/2026-09-21-day13.md`）。準備進入 Week 3 Day 2：Delivery guarantee（at-least-once/exactly-once）、Consistency model 選擇
+- **目前所在**：Week 3 Day 2 進行中（**Delivery guarantee（at-most-once/at-least-once/exactly-once + idempotent consumer）、Consistency model 選擇（weak/eventual/strong 分資料選型）**；教材已產出，練習題待作答；記錄見 `daily_road_map/2026-09-22-day14.md`）。前一天：Week 3 Day 1（WebSocket vs Long Polling vs SSE、Message Queue 基礎，見 `daily_road_map/2026-09-21-day13.md`）。
 - **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）、#3 Distributed Cache（`issues/03-distributed-cache.md`）
 - **本次新進展（Mock #3）**：back-of-envelope estimation 首次在 mock 中主動使用並自我糾錯；compound question paraphrase 首次不經提示主動做到；容量規劃時主動想到 failure headroom 並正確推導完整的 cascade failure chain
 - **累積弱點清單**：
@@ -36,9 +36,9 @@ Status: active
   - **Compound question 的 paraphrase-first 習慣第一次不經提示主動做到**（Mock #1、#2 的頭號 carry-over，Mock #3 終於出現，儘管內容還不夠精確，需持續驗收到穩定）。
   - **會主動把「容量夠不夠」延伸到「容錯夠不夠」，並正確推導完整的 cascade failure chain**（Mock #3：3 nodes 容量夠但零容錯 → 一台掛掉鄰居直接過載 → eviction → hot-key miss → backend flood → 可能繼續連環倒），這是前兩場沒出現過的主動風險意識，值得在下次 mock 持續驗收是否穩定出現。
   - **【Day 12 新增】容量估算後會主動延伸到 replication factor 的可用性風險**（Day 12 Part 3：算完 RF=2 的容量後，主動指出「master 掛掉、唯一 replica 被 promote 後系統暫時缺乏 replica」，建議提高到 RF=3），跟上一條 cascade failure chain 是同一種「容量→容錯」主動延伸的正向習慣，這次是在非 mock 情境下也穩定出現，值得下次 mock 驗收。
-- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`、`daily_road_map/2026-09-17-day12.md`、`daily_road_map/2026-09-21-day13.md`
+- **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`、`daily_road_map/2026-09-17-day12.md`、`daily_road_map/2026-09-21-day13.md`、`daily_road_map/2026-09-22-day14.md`
 - **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`、`issues/03-distributed-cache.md`
-- **最後更新**：2026-09-21
+- **最後更新**：2026-09-22
 
 ## 背景
 
