@@ -6,9 +6,9 @@ Status: active
 
 > 每次上課/mock interview 後更新此區塊，作為進度的唯一權威來源（換 agent session 時，先讀這裡再繼續）。
 
-- **目前所在**：Week 3 Day 2 進行中（**Delivery guarantee（at-most-once/at-least-once/exactly-once + idempotent consumer）、Consistency model 選擇（weak/eventual/strong 分資料選型）**；教材已產出，練習題待作答；記錄見 `daily_road_map/2026-09-22-day14.md`）。前一天：Week 3 Day 1（WebSocket vs Long Polling vs SSE、Message Queue 基礎，見 `daily_road_map/2026-09-21-day13.md`）。
-- **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）、#3 Distributed Cache（`issues/03-distributed-cache.md`）
-- **本次新進展（Mock #3）**：back-of-envelope estimation 首次在 mock 中主動使用並自我糾錯；compound question paraphrase 首次不經提示主動做到；容量規劃時主動想到 failure headroom 並正確推導完整的 cascade failure chain
+- **目前所在**：Week 3 Day 3 完成（**AI Mock Interview #4：Chat System**，記錄見 `issues/04-chat-system.md`）。下一步：Week 3 Day 4（Debrief + 弱點補強）。前一天：Week 3 Day 2（Delivery guarantee、Consistency model，見 `daily_road_map/2026-09-22-day14.md`）。
+- **已完成的 Mock Interview**：#1 URL Shortener（`issues/01-url-shortener.md`）、#2 Rate Limiter（`issues/02-rate-limiter.md`）、#3 Distributed Cache（`issues/03-distributed-cache.md`）、#4 Chat System（`issues/04-chat-system.md`）
+- **本次新進展（Mock #4）**：compound 問題開始主動拆成編號子題逐一作答；Day 14 的「delivery/ordering/consistency 三軸混淆」整場未再出現；每次被指出錯誤都一輪內自我修正；主動提出 storage tiering、seq cursor 同步、以 hash(conversation_id) 分 partition 保證順序
 - **累積弱點清單**：
   - 容易停在「概念知道」層次，較少主動講到具體技術機制（如 L4/L7 路由如何影響設計決策）
   - Trade-off 分析時，容易漏抓系統的不對稱性（例如流量比例懸殊時，哪一半才是真正需要優化的對象）
@@ -31,14 +31,26 @@ Status: active
   - **【Day 12 新增】內容正確 ≠ 檢查動作已內化**：文字/非壓力情境下重講 Mock #3 片段時，即使最後答案正確，仍會跳過 Day 11 剛練的「先講檢查句再回答」這個中間步驟，要提醒才會補上。下次 mock 需驗收這個檢查動作能否在沒有事先提醒的情況下自動出現。
   - **【Day 12 新增】容量估算時重複代入同一個數字造成單位/量級混亂**：500k keys 的資訊被重複用在兩個相乘項裡，導致記憶體估算差了近 20 倍（40GB vs 實際 ~2GB），並直接帶出「需要 2 shard」的錯誤架構結論——與 Week 1 Day 3 keyspace 估算錯誤同一形狀，估算是持續性弱點，尚未穩定。算完建議用「量級直覺」回頭檢查一次。
   - **【Day 12 新增】Physical node 數量該由「容量算式」還是「容錯算式」決定，兩者會在同一句話裡打架**：算完「容量只需 1 台」又緊接著說「1 master + 1 replica」，未意識到這兩句話矛盾。正確心智模型是「取兩者較大值」，是 Day 11 virtual/physical node 心智模型的另一個變體（這次不是 virtual vs physical 搞混，是「physical node 該由哪個算式決定」搞混）。
+  - **【Day 14 新增，最高優先，全新模式】把 delivery guarantee（會不會遺失/重複）／ordering（順序對不對）／consistency model（多久看到最新值）三個獨立維度混為一談**：三題練習題都出現用 strong/eventual/weak consistency 的詞彙去解釋「訊息會不會遺失」或「順序對不對」，但這兩者在 delivery guarantee 與 ordering 的範疇，跟 consistency model 是三個獨立的軸。與既有「virtual/physical node 混淆」「CAS/WAIT 亂套用」同一種相鄰詞彙互相借用的模式，但這次三個維度同時混，範圍更大。下次 mock 前建議自我測驗：同一情境要求分別用「會不會遺失/重複」「順序對不對」「多久看到最新值」三句話分開回答。
+  - **【Day 14 新增】compound 問題只答一半、沒有主動核對是否還有子項目未答**：題 1 只答了「哪裡要 at-least-once」，漏答「哪裡可以只用 at-most-once」；與 Day 12「內容正確≠檢查動作已內化」同類——回答完第一部分就停下,沒有核對題目要求的每個子項目是否都答了。
+  - **【Day 14 新增】面試官追問「代價的緩解方式」時，答成重複描述既有機制**：題 3 追問「已讀狀態跳掉的緩解方式」，答案卻只是重講一次已讀回條走 MQ 更新 DB 的既有機制，沒有回答「跳動」這個副作用本身要怎麼緩解——是「選定策略時只講優點、不主動點出代價」的下一層變體：這次代價已經被面試官點名，仍答不到具體緩解（單調遞增游標）。
+  - **【Day 14 今日技巧，已修正】題 1、2 缺的解法是「用單調遞增的 sequence number／游標決定順序」；題 3（replica 分區癒合造成的已讀跳動）不是同一個問題**——那是 eventual consistency 選型必然的視窗期代價，monotonic seq 只能保證分區癒合時「合併到正確值」，不能讓使用者感受不到跳動，緩解要靠 sticky routing／bounded staleness，或誠實承認代價無法完全消除。此修正是使用者當場用具體情境指出教學端誤把「亂序倒退」跟「replica 落後」兩種失敗模式混為一談。
+  - **【Mock #4 新增，最高優先】compound 題已會拆子題，但「要求說出名稱／『誰』」的子題會被跳過**：「哪個 requirement 決定？」「誰決定 `delivered`？」「這個 guarantee 叫什麼？」（問兩次都沒答 at-least-once）。拆題習慣已建立，下一步是答完後回頭逐項打勾核對。
+  - **【Mock #4 新增】cost/mitigation 仍需提示才出現**：前三個選型（replica、archive tier、Redis registry）都沒主動講代價或緩解；被要求「不用我另外問」之後，才一次對兩條 failure path 各給出對得上的緩解。要讓它在被問之前就出現。
+  - **【Mock #4 新增】設計流程前沒先定義狀態語意**：`delivered` 被設成「consumer 拿到就算」而非「收件端 ACK」，導致離線時寄件者看到錯誤狀態；且把明確 out of scope 的 read receipt 也設計進去。先定義每個狀態的意義與誰有權宣告，再畫 pipeline。
+  - **【Mock #4 新增】replica 數量與 region 數量綁在一起**（「3 replicas 因為 3 regions」，出現兩次）：RF 由 durability/availability 決定（通常跨 AZ），region 數量由 latency/DR 決定，是兩個獨立旋鈕。
+  - **【Mock #4 新增】clarifying question 問成「設計決策」**（「需要幾個 replica？」）而非 requirement；並把「使用者遍布全球」當假設直接用，而沒有先問。
 - **已確認開始生效的正向習慣（保留，避免退步）**：
+  - **【Mock #4 新增】compound 問題主動拆成編號子題逐一作答**（Mock #3 首次 paraphrase 之後的進一步穩定；待加上「答完逐項核對」）。
+  - **【Mock #4 新增】delivery guarantee／ordering／consistency 三軸在 mock 壓力下保持分開**（Day 14 最高優先弱點，本場未復發）。
+  - **【Day 14 新增】能對教學端（我）給的 cost/mitigation 配對做邏輯相關性檢查，並用具體反例指出錯誤**：Day 14 題 3 中，我原本把「monotonic seq 緩解已讀跳動」當作答案，使用者用「replica 分區癒合、跳動方向是遞增」這個具體情境指出兩者對不上，準確分辨出「亂序倒退」跟「replica 落後」是兩種不同失敗模式。這正是 spec.md 長期要求的「說出 cost/mitigation 前檢查兩者是否真的邏輯相關」，這次首次穩定用在檢查別人的答案上，值得下次 mock 驗收是否能在壓力情境下也對自己的答案做同樣檢查。
   - **Back-of-envelope estimation 已能在 mock 中主動使用，即使第一次算錯也會自我發現並糾正**（Mock #3：p99 latency 跟 throughput ceiling 搞混，被追問後自己分清楚兩者關係）——Day 7/9 練的容量估算，第三場 mock 終於 transfer 進來。
   - **Compound question 的 paraphrase-first 習慣第一次不經提示主動做到**（Mock #1、#2 的頭號 carry-over，Mock #3 終於出現，儘管內容還不夠精確，需持續驗收到穩定）。
   - **會主動把「容量夠不夠」延伸到「容錯夠不夠」，並正確推導完整的 cascade failure chain**（Mock #3：3 nodes 容量夠但零容錯 → 一台掛掉鄰居直接過載 → eviction → hot-key miss → backend flood → 可能繼續連環倒），這是前兩場沒出現過的主動風險意識，值得在下次 mock 持續驗收是否穩定出現。
   - **【Day 12 新增】容量估算後會主動延伸到 replication factor 的可用性風險**（Day 12 Part 3：算完 RF=2 的容量後，主動指出「master 掛掉、唯一 replica 被 promote 後系統暫時缺乏 replica」，建議提高到 RF=3），跟上一條 cascade failure chain 是同一種「容量→容錯」主動延伸的正向習慣，這次是在非 mock 情境下也穩定出現，值得下次 mock 驗收。
 - **每日問答記錄**：`daily_road_map/2026-08-19-day2.md`、`daily_road_map/2026-08-20-day3.md`、`daily_road_map/2026-08-21-day4.md`、`daily_road_map/2026-09-01-day6.md`、`daily_road_map/2026-09-02-day7.md`、`daily_road_map/2026-09-08-day8.md`、`daily_road_map/2026-09-10-day9.md`、`daily_road_map/2026-09-14-day10.md`、`daily_road_map/2026-09-16-day11.md`、`daily_road_map/2026-09-17-day12.md`、`daily_road_map/2026-09-21-day13.md`、`daily_road_map/2026-09-22-day14.md`
-- **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`、`issues/03-distributed-cache.md`
-- **最後更新**：2026-09-22
+- **Mock Interview 記錄**：`issues/01-url-shortener.md`、`issues/02-rate-limiter.md`、`issues/03-distributed-cache.md`、`issues/04-chat-system.md`
+- **最後更新**：2026-09-24
 
 ## 背景
 
